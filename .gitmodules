@@ -482,3 +482,11 @@
 	path = libs/lexical_cast
 	url = ../lexical_cast.git
 	fetchRecurseSubmodules = on-demand
+[submodule "sort"]
+	path = libs/sort
+	url = ../sort.git
+	branch = master
+[submodule "endian"]
+	path = libs/endian
+	url = ../endian.git
+	fetchRecurseSubmodules = on-demand

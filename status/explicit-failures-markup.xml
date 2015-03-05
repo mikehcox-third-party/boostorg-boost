@@ -646,6 +646,21 @@
         </mark-unusable>
     </library>
 
+    <!-- convert-->
+    <library name="convert">
+        <test name="convert_test_has_begin">
+          <mark-failure>
+            <toolset name="msvc-8.0*"/>
+            <toolset name="msvc-9.0*"/>
+            <toolset name="msvc-10.0*"/>
+            <toolset name="msvc-11.0*"/>
+            <note author="Vladimir Batov">
+                The relevant SFINAE support is broken in MSVC up to version 11.
+            </note>
+          </mark-failure>
+        </test>
+    </library>
+
     <!-- lexical_cast -->
     <library name="lexical_cast">
         <test name="lexical_cast_test">
@@ -685,6 +700,7 @@
                 <toolset name="msvc-10.0*"/>
                 <toolset name="msvc-11.0*"/>
                 <toolset name="msvc-12.0*"/>
+                <toolset name="msvc-14.0*"/>
                 <toolset name="msvc-7.1*"/>
                 <toolset name="vacpp-10.1"/>
                 <toolset name="qcc-4*"/>
@@ -700,8 +716,11 @@
             <mark-failure>
                 <toolset name="vacpp-*"/>
                 <toolset name="vacpp"/>
+                <toolset name="msvc-8.0"/>
+                <toolset name="msvc-9.0"/>
                 <toolset name="msvc-9.0~stlport5.2"/>
                 <toolset name="msvc-9.0~wm5~stlport5.2"/>
+                <toolset name="msvc-10.0"/>
                 <toolset name="intel-darwin-11.*"/>
                 <toolset name="intel-darwin-12.0"/>
                 <toolset name="qcc-4*"/>
@@ -2137,6 +2156,7 @@
 			<toolset name="msvc-10.0*"/>
 			<toolset name="msvc-11.0*"/>
 			<toolset name="msvc-12.0*"/>
+			<toolset name="msvc-14.0*"/>
 			<note author="Joachim Faulhaber">
 				Compiler error expected for msvc: A minimal example of a class template 'value' that
 				results in syntax error in a subsequent meta function.
@@ -2574,9 +2594,11 @@
             <toolset name="gcc-mingw-4.5.2_0x"/>
             <toolset name="msvc-10.0"/>
             <toolset name="msvc-11.0"/>
+            <toolset name="msvc-12.0"/>
+            <toolset name="msvc-14.0"/>
             <note author="Lorenzo Caminiti">
                 This test does not allow C++11 auto-declaration support
-                (beccause it uses the `auto` keyword as storage classifier).
+                (because it uses the `auto` keyword as storage classifier).
             </note>
         </mark-expected-failures>
     </library>
@@ -2982,6 +3004,75 @@ for more information.
    
          <!-- optional -->
     <library name="optional">
+        <mark-expected-failures>
+            <test name="optional_test_ref_assign_const_int"/>
+            <toolset name="msvc-10.0"/>
+            <note author="Andrzej Krzemienski" id="optional-const-int-ref-bug">
+                <p>This is a compiler bug: it sometimes creates an illegal temporary object.
+		The following code illustrates the bug:</p>
+		<pre>
+		#include &lt;cassert&gt;
+		const int global_i = 0;
+		
+		struct TestingReferenceBinding
+		{
+		  void operator=(const int&amp; ii)
+		  {
+		    assert(&amp;ii == &amp;global_i);
+		  }
+		};
+		
+		int main()
+		{
+		  TestingReferenceBinding ttt;
+		  ttt = global_i;
+		}
+                </pre>
+            </note>
+        </mark-expected-failures>
+        <mark-expected-failures>
+            <test name="optional_test_ref_converting_ctor"/>
+            <toolset name="gcc-4.4*"/>
+            <toolset name="gcc-4.2.1"/>
+            <toolset name="gcc-4.5*"/>
+            <toolset name="gcc-5.0.0"/>
+            <toolset name="qcc-4.4.2_x86"/>
+            <toolset name="qcc-4.4.2_arm"/>
+            <toolset name="gcc-mingw-4.4*"/>
+            <toolset name="gcc-mingw-4.5*"/>
+            <note author="Andrzej Krzemienski" id="optional-ref-convert-assign-bug">
+                <p>This is a compiler bug: it sometimes creates an illegal temporary object.
+		The following code illustrates the bug:</p>
+		<pre>
+		#include &lt;cassert&gt;
+		const int global_i = 0;
+		
+		struct TestingReferenceBinding
+		{
+		  TestingReferenceBinding(const int&amp; ii)
+		  {
+		    assert(&amp;ii == &amp;global_i);
+  		  }
+		};
+		
+		int main()
+		{
+		  TestingReferenceBinding ttt = global_i;
+		}
+                </pre>
+            </note>
+        </mark-expected-failures>
+        <mark-expected-failures>
+		<test name="optional_test_ref_convert_assign_const_int"/>
+		<toolset name="msvc-8.0"/>
+		<toolset name="msvc-9.0"/>
+		<toolset name="msvc-10.0"/>
+		<toolset name="msvc-11.0"/>
+		<toolset name="msvc-12.0"/>
+		<note author="Andrzej Krzemienski" id="optional-const-int-ref-assign-bug">
+			<p>This is a compiler bug: it sometimes creates an illegal temporary object.</p>
+		</note>
+	</mark-expected-failures>
         <mark-expected-failures>
             <test name="optional_test_ref"/>
             <toolset name="msvc-6.5*"/>
@@ -5797,6 +5888,9 @@ This platform doesn't supports Boost.Container.
             <toolset name="msvc-8.0*"/>
             <toolset name="msvc-9.0*"/>
             <toolset name="msvc-10.0*"/>
+            <toolset name="msvc-11.0*"/>
+            <toolset name="msvc-12.0*"/>
+            <toolset name="msvc-14.0*"/>
             <note author="Alexander Nasonov">
                 See bug 99776 'enum UIntEnum { value = UINT_MAX } is promoted to int'
                 http://lab.msdn.microsoft.com/ProductFeedback/viewfeedback.aspx?feedbackid=22b0a6b7-120f-4ca0-9136-fa1b25b26efe

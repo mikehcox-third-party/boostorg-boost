@@ -353,7 +353,11 @@ if test "x$flag_no_python" = x; then
   cat >> project-config.jam <<EOF
 
 # Python configuration
-using python : $PYTHON_VERSION : $PYTHON_ROOT ;
+import python ;
+if ! [ python.configured ]
+{
+    using python : $PYTHON_VERSION : $PYTHON_ROOT ;
+}
 EOF
 fi
 
@@ -400,6 +404,6 @@ Further information:
      http://www.boost.org/more/getting_started/unix-variants.html
      
    - Boost.Build documentation:
-     http://www.boost.org/boost-build2/doc/html/index.html
+     http://www.boost.org/build/doc/html/index.html
 
 EOF
